@@ -1,0 +1,289 @@
+
+
+centos7 安装docker
+
+1.yum install docker
+
+2.启动docker
+service docker start
+
+启动可能会报错
+禁用--selinux-enabled=false
+
+编辑文件
+vim /etc/sysconfig/docker
+
+OPTIONS='--selinux-enabled=false --log-driver=journald --signature-verification=false'
+if [ -z "${DOCKER_CERT_PATH}" ]; then
+    DOCKER_CERT_PATH=/etc/docker
+fi
+
+
+因为用的overlay2文件系统，而系统默认只能识别overlay文件系统 
+vim /etc/sysconfig/docker-storage
+例：DOCKER_STORAGE_OPTIONS="--storage-driver overlay"
+
+
+或直接升级内核重启虚拟机
+yum install -y kernel
+
+
+docker命令操作
+
+docker info
+
+docker search centos #搜索容器
+docker pull centos #下载容器
+docker images #查看当前存在的镜像
+
+
+下载redis 镜像
+docker pull redis:latest
+docker pull redis
+查看下载的本地镜像
+docker images
+
+运行容器
+docker run -itd --name redis-test -p 6379:6379 redis
+
+-p 6379:6379：映射容器服务的 6379 端口到宿主机的 6379 端口。外部可以直接通过宿主机ip:6379 访问到 Redis 的服务。
+
+接着我们通过 redis-cli 连接测试使用 redis 服务。
+
+docker exec -it redis-test /bin/bash
+
+# docker ps 
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                    NAMES
+8181be106f42        redis               "docker-entrypoint..."   2 minutes ago       Up 2 minutes        0.0.0.0:6379->6379/tcp   redis-test
+
+连接、查看容器,使用redis镜像执行redis-cli命令连接到刚启动的容器,主机IP为172.17.0.1
+docker exec -it 8181be106f42 redis-cli
+
+
+
+
+
+
+
+
+
+
+docker run 命令来在容器内运行一个应用程序
+
+
+docker run 运行的镜像或镜像id    /bin/echo "Hello world"
+
+docker run redis /bin/echo "Hello world"
+docker run 739b59b96069 /bin/echo "Hello world"
+
+
+docker run -itd --name ubuntu-test ubuntu /bin/bash
+加了 -d 参数默认不会进入容器，想要进入容器需要使用指令 docker exec
+
+运行交互式的容器
+我们通过 docker 的两个参数 -i -t，让 docker 运行的容器实现"对话"的能力：
+
+
+
+
+docker exec -it 8181be106f42 redis-cli
+docker exec -it 8181be106f42 /bin/bash
+
+我们可以通过运行 exit 命令或者使用 CTRL+D 来退出容器。
+
+
+在宿主主机内使用 docker logs 命令，查看容器内的标准输出：
+
+
+docker logs 8181be106f42
+docker logs redis-test
+
+
+我们使用 docker stop 命令来停止容器:
+docker stop 8181be106f42
+docker stop  redis-test
+
+再重新启动 docker start  redis-test
+
+docker restart <容器 ID>
+
+
+
+docker command --help
+
+docker start --help
+
+
+进入容器 docker attach 1e560fca3906 
+如果从这个容器退出，会导致容器的停止。
+
+docker exec -it 243c32535da7 /bin/bash
+ 如果从这个容器退出，容器不会停止，这就是为什么推荐大家使用 docker exec 的原因。
+
+
+导出和导入容器
+
+docker export 1e560fca3906 > ubuntu.tar
+
+导出容器 1e560fca3906 快照到本地文件 ubuntu.tar。
+
+导入容器快照
+
+cat docker/ubuntu.tar | docker import - test/ubuntu:v1
+
+此外，也可以通过指定 URL 或者某个目录来导入，例如：
+docker import http://example.com/exampleimage.tgz example/imagerepo
+
+
+删除容器使用 docker rm 命令：
+
+docker rm -f 1e560fca3906
+
+下面的命令可以清理掉所有处于终止状态的容器。
+
+ docker container prune
+
+使用 docker port 可以查看指定 （ID 或者名字）容器的某个确定端口映射到宿主机的端口号。
+
+docker port 8181be106f4
+docker port redis-test
+
+我们还可以使用 docker top 来查看容器内部运行的进程
+docker top redis-test
+
+
+docker inspect redis-test
+
+
+
+管理镜像
+docker images 列出本地主机上的镜像
+
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+docker.io/redis     latest              739b59b96069        2 days ago          105 MB
+
+REPOSITORY：表示镜像的仓库源
+TAG：镜像的标签
+IMAGE ID：镜像ID
+CREATED：镜像创建时间
+SIZE：镜像大小
+
+docker run -t -i ubuntu:14.04 /bin/bash 
+
+
+如果你不指定一个镜像的版本标签，例如你只使用 ubuntu，docker 将默认使用 ubuntu:latest 镜像。
+
+
+
+获取一个新的镜像
+
+docker pull ubuntu:13.10
+
+docker pull  REPOSITORY:TAG
+
+
+查找镜像
+docker search httpd
+
+拖取镜像
+docker run httpd
+删除镜像
+docker rmi httpd
+
+构建镜像
+
+
+Docker 容器连接
+docker run -d -P training/webapp python app.py
+
+-P :是容器内部端口随机映射到主机的高端口。
+docker run -d -p 5000:5000 training/webapp python app.py
+-p : 是容器内部端口绑定到指定的主机端口。
+
+另外，我们可以指定容器绑定的网络地址，比如绑定 127.0.0.1。
+
+docker run -d -p 127.0.0.1:5001:5000 training/webapp python app.py
+
+Docker 容器互联
+
+新建网络
+
+docker network --help
+docker network  ls
+
+
+
+docker network create -d bridge test-net
+-d：参数指定 Docker 网络类型，有 bridge、overlay。
+其中 overlay 网络类型用于 Swarm mode，在本小节中你可以忽略它。
+
+
+
+
+
+docker pull nginx:latest
+docker run --name nginx-test -p 8080:80 -d nginx
+
+--name nginx-test：容器名称。
+-p 8080:80： 端口进行映射，将本地 8080 端口映射到容器内部的 80 端口。
+-d nginx： 设置容器在在后台一直运行。
+
+
+docker exec -it nginx-test /bin/bash
+
+
+docker run -it -v /宿主机目录:/容器目录 镜像名 /bin/bash
+
+docker run  -it  -v /etc/nginx:/etc/nginx nginx
+
+docker run --name nginx -p 80:80 -v /home/docker-nginx/nginx.conf:/etc/nginx/nginx.conf -v /home/docker-nginx/log:/var/log/nginx -v /home/docker-nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf -d nginx
+
+
+
+
+启动 nginx 并挂载 主机/root/apps 到 容器nginx-test /test目录
+
+docker run  -itd  -v /root/apps:/test --name  nginx-test  nginx 
+
+这样容器里在 /test目录 就可以看到主机/root/apps 的文件
+
+
+
+docker cp 命令
+将主机/www/runoob目录拷贝到容器96f7f14e99ab的/www目录下。
+
+docker cp /www/runoob 96f7f14e99ab:/www/
+
+docker cp ./jdk-8u281-linux-x64.rpm bc87af1abf36:/ygt/
+
+将主机/www/runoob目录拷贝到容器96f7f14e99ab中，目录重命名为www。
+
+docker cp /www/runoob 96f7f14e99ab:/www
+
+
+将容器96f7f14e99ab的/www目录拷贝到主机的/tmp目录中。
+
+docker cp  96f7f14e99ab:/www /tmp/
+
+docker cp bc87af1abf36:/ygt/file   ./
+
+
+
+nginx 映射配置文件和数据文件
+
+
+
+ docker container prune
+docker run --name nginx-test  -d nginx
+
+把默认配置文件拷贝出来
+
+docker cp nginx-test:/etc/nginx/conf.d/default.conf  ./
+
+
+docker run --name nginx-test -v /etc/nginx:/etc/nginx -v /var/log/nginx:/var/log/nginx   -p 80:80  -d nginx
+
+
+
+
+

@@ -1,0 +1,33 @@
+
+参考博客：https://blog.csdn.net/qq_37372007/article/details/81586751
+https://www.cnblogs.com/wfd360/p/11314697.html
+
+1.下载jenkins war 部署到tomcat上
+
+2.访问tomcat http://192.168.31.50:9090/jenkins
+
+进入 解锁 Jenkins 页面
+
+界面上显示密码文件存放路径
+/root/.jenkins/secrets/initialAdminPassword
+
+输入管理员密码
+
+按提示安装插件
+
+插件安装完成后  
+
+输入一个管理员账号
+
+ygt
+密码：123456
+
+
+
+
+创建 github 账号
+username：ygtgithub
+
+密码 1015282423ygt
+
+邮箱yanggentao@vita-course.com

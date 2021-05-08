@@ -1,0 +1,322 @@
+同步系统时间centos   ntpdate cn.pool.ntp.org
+
+git svn  熟悉一下
+
+(1)Sharding-Proxy的使用
+
+1、官网下载
+
+sharding-jdbc的官网http://shardingsphere.io/document/current/cn/manual/sharding-proxy/usage/
+
+2、配置文件
+
+打开server.yaml文件，把下面部分注释打开
+
+打开config-sharding.yaml文件，把全部只是打开，同时配置数据距名称和密码；（以两个库，每个库两个表为例子）
+
+
+3.启动
+
+./bin/start.sh
+
+
+
+(2)mycat的使用
+
+
+(3)git svn  熟悉一下
+
+1.yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel
+2. yum -y install git-core
+3.git --version
+
+命令操作
+/etc/gitconfig 文件：系统中对所有用户都普遍适用的配置。若使用 git config 时用 --system 选项，读写的就是这个文件。
+~/.gitconfig 文件：用户目录下的配置文件只适用于该用户。若使用 git config 时用 --global 选项，读写的就是这个文件。
+
+
+git config --global user.name "yanggentao"  配置 user.name
+git config --global user.email 1015282423@qq.com  配置 user.email 1015282423@qq.com
+git config --list  显示所有配置项
+
+git config user.name 查看某个配置项的值
+
+git help -a 显示所有命令
+
+1.创建 git 仓库testdb    
+git init testdb 初始化一个 Git 仓库
+2.
+git add ./*
+git commit -m '初始化项目版本'
+
+3我们使用 git clone 从现有 Git 仓库中拷贝项目（类似 svn checkout）。
+如果我们需要克隆到指定的目录，可以使用以下命令格式：
+
+git clone <repo> <directory>
+
+例子:git clone git://github.com/schacon/grit.git
+
+
+4.编辑 git 配置文件:
+git config -e    # 针对当前仓库
+git config -e --global   # 针对系统上所有仓库
+
+
+5.几种效果等价的git clone写法：
+git clone http://github.com/CosmosHua/locate new
+git clone http://github.com/CosmosHua/locate.git new
+git clone git://github.com/CosmosHua/locate new
+git clone git://github.com/CosmosHua/locate.git new
+
+
+
+git 概念
+workspace：工作区
+staging area：暂存区/缓存区
+local repository：版本库或本地仓库
+remote repository：远程仓库
+
+git init - 初始化仓库。
+git add . - 添加文件到暂存区。
+git commit - 将暂存区内容添加到仓库中。
+
+git checkout -- <file>..." 丢弃工作区的改动
+git add <file>..." 更新要提交的内容
+
+git add	添加文件到仓库
+git status	查看仓库当前的状态，显示有变更的文件。
+git diff	比较文件的不同，即暂存区和工作区的差异。
+git commit	提交暂存区到本地仓库。
+git reset	回退版本。
+git rm	删除工作区文件。  将文件从暂存区和工作区中删除： 如果删除之前修改过并且已经放到暂存区域的话，则必须要用强制删除选项 -f。
+
+如果想把文件从暂存区域移除，但仍然希望保留在当前工作目录中，换句话说，仅是从跟踪清单中删除，使用 --cached 选项即可：
+git rm --cached <file>
+可以递归删除，即如果后面跟的是一个目录做为参数，则会递归删除整个目录中的所有子目录和文件：
+git rm –r * 
+
+git mv	移动或重命名工作区文件。
+
+
+git log	查看历史提交记录
+git log --reverse --oneline
+git blame <file>	以列表形式查看指定文件的历史修改记录
+
+
+git reset [--soft | --mixed | --hard] [HEAD]
+HEAD 表示当前版本
+
+HEAD^ 上一个版本
+
+HEAD^^ 上上一个版本
+
+HEAD^^^ 上上上一个版本
+
+HEAD~0 表示当前版本
+
+HEAD~1 上一个版本
+
+HEAD^2 上上一个版本
+
+HEAD^3 上上上一个版本
+
+
+
+git 服务器配置
+id git 查看有没有git用户
+useradd git 创建git用户
+passwd git  设置密码
+
+git 用户
+密码:  ygt@$123
+
+
+初始化git仓库   git init --bare ./gittest.git (gittest.git 是个目录)
+裸（bare）仓库里只存储历史和元信息，不会维护工作目录。git目录。如果需要在服务器查看文件，在服务器建立仓库的时候不要加--bare 你看下能不能帮助你
+
+chown -R git:git gittest.git/  赋予权限
+
+也可以不用创建新用户直接用root账号
+
+下载克隆
+git clone root@192.168.31.98:/root/gitdb/gittest.git
+
+
+git clone root@192.168.31.98:/root/gitdb/gromit
+
+http://ubuntu.server/tianhc/serialize-demo.git
+
+http://192.168.31.98/root/gitdb/gittest.git
+
+
+
+Git裸仓库和非裸仓库的区别
+
+[receive]
+    denyCurrentBranch = ignore
+
+就可以看到push的内容了
+git reset --hard
+
+
+Git 分支管理
+
+1.创建分支命令：
+git branch branchname
+2.切换分支命令:
+git checkout branchname
+我们也可以使用 git checkout -b (branchname) 命令来创建新分支并立即切换到该分支下，从而在该分支中操作。
+3.合并分支命令:
+
+git merge 
+
+4.git branch  列出分支
+
+5.删除分支命令：
+
+git branch -d branchname
+
+
+在 Git 中，我们可以用 git add 要告诉 Git 文件冲突已经解决
+
+
+
+创建分支命令例子
+Git创建Develop分支的命令：
+git checkout -b develop master
+
+# 切换到Master分支
+　　git checkout master
+
+　　# 对Develop分支进行合并
+　　git merge --no-ff develop
+
+
+创建一个功能分支：
+
+　　git checkout -b feature-x develop
+开发完成后，将功能分支合并到develop分支：
+
+　　git checkout develop
+
+　　git merge --no-ff feature-x
+
+删除feature分支：
+
+　　git branch -d feature-x
+
+
+gitlab 安装和配置  (网页 管理git)
+
+
+1.安装依赖库
+yum install -y curl policycoreutils policycoreutils-python openssh-server openssh-clients postfix
+
+2.下载 gitlab 的 RPM 包
+
+wget --content-disposition https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-13.10.2-ce.0.el7.x86_64.rpm/download.rpm
+
+3.安装rpm包
+rpm -ivh gitlab-ce-13.10.2-ce.0.el7.x86_64.rpm 
+
+4.启动postfix  (邮件)
+systemctl enable postfix
+systemctl start postfix
+
+5.systemctl stop firewalld  关闭防火墙
+
+
+6.查看 gitlab 安装完后的路径
+
+
+rpm -qpl gitlab-ce-12.0.8-ce.0.el7.x86_64.rpm
+
+默认安装到 /opt/gitlab 下
+
+7.配置并启动 gitlab	
+gitlab-ctl reconfigure
+
+
+gitlab-ctl stop
+gitlab-ctl start
+gitlab-ctl restart
+
+8.查看 gitlab 状态，默认使用 nginx 作为 web 服务器
+
+
+gitlab-ctl status
+
+
+gitlab-ctl tail  查看 gitlab 启动日志
+
+9.修改配置文件
+
+ /var/opt/gitlab/gitlab-rails/etc/gitlab.yml 
+
+配置192.168.31.98本机域名gitserver
+
+10.进入主页
+http://gitserver/
+
+
+以上安装gitlab  没有成功
+
+11. 配置虚拟机网络使能上网
+/etc/sysconfig/network-scripts
+
+NETMASK=255.255.255.0
+GATEWAY=192.168.20.2
+DNS1=8.8.8.8
+DNS2=114.114.114.114
+
+然后重启网络
+service network restart
+
+
+安装配置gitlab  (参考  https://suyuening.com/archives/2139.html)
+1.配置yum
+vim /etc/yum.repos.d/tsinghua.repo
+输入一下内容
+[gitlab-ce]
+name=Gitlab CE Repository
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el$releasever/
+gpgcheck=0
+enabled=1
+
+2.安装依赖包
+yum makecache
+yum install -y curl policycoreutils-python openssh-server
+
+3.安装gitlab-ce
+
+yum install -y gitlab-ce
+
+
+4. 配置Gitlab
+vim /etc/gitlab/gitlab.rb
+
+# 改域名,修改成自己的域名,如果用的https，改成https://gitlab.xxxxxx.com
+external_url 'http://gitlab.suyuening.com'
+# CPU使用核数，默认好像是24核，用不了那么多，改成2
+unicorn['worker_processes'] = 2
+# 时域
+gitlab_rails['time_zone'] = 'Asia/Shanghai'
+
+
+vim /opt/gitlab/embedded/service/gitlab-rails/config/gitlab.yml
+
+5.gitlab-ctl reconfigure
+
+6.gitlab后台界面
+
+先配置本地域名 
+找到 hosts文件（C:\Windows\System32\drivers\etc） 追加如下
+
+
+192.168.31.96 gitserver
+
+http://gitserver
+
+puma
+grafana
+unicorn

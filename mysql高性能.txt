@@ -1,0 +1,144 @@
+
+lock table
+
+read lock
+
+write lock
+
+
+start transaction;
+
+commit;
+rollback;
+
+
+acid 
+原子性，
+一致性，
+隔离性（一个事务在提交之前对其他事务是不可见的），
+持久性（一旦提交就永久的保存在数据库）
+
+
+
+隔离级别:
+
+1.read uncommitted 未提交读 (脏读)
+一个事务还没有提交，他修改的数据对其他事务可见
+2.read committed 提交读
+一个事务从开始到提交之前，所做的任何修改对其他事物都是不可见的
+也叫不可重复读：如果一个事务提交了，另一个事务再次读取相同的记录和上次读取的不一样了
+3.repeatable read 可重复读
+一个事务从开始到提交之前，所做的任何修改对其他事物都是不可见的，
+可重复读：
+如果一个事务提交了，另一个事务再次读取相同的记录和上次读取的一样
+
+如果一个事务插入了一条记录，并且提交了，那么另一个事务也是读取不到这条事务
+产生了幻读，没有读取到符合范围的所有最新记录
+
+4.serializable 可串行化
+强制书屋串行执行
+
+数据库设置隔离级别
+set session transaction isolation level read uncommitted;
+查询隔离级别
+select @@tx_isolation;
+
+SET autocommit=0; 设置不自动提交
+SHOW VARIABLES LIKE '%autocommit%'
+
+start transaction; 启动事务
+
+
+显示锁：
+select ... lock in share mode
+select ... for update
+
+
+MVCC多版本并发控制
+
+
+优化器
+
+SHOW VARIABLES LIKE '%optimizer_switch%'
+
+EXPLAIN EXTENDED SELECT * FROM t_account WHERE loginname LIKE '%158%' ORDER BY loginname
+
+
+ type列
+这一列表示关联类型或访问类型，即MySQL决定如何查找表中的行。
+
+依次从最优到最差分别为：system > const > eq_ref > ref > fulltext > ref_or_null > index_merge > unique_subquery > index_subquery > range > index > ALL
+
+select ... for update  X锁
+select ... lock in share mode  S锁 
+
+
+
+
+
+
+
+show tables from schemaname
+
+
+
+SHOW COLUMNS FROM duckula.t_measure_parm
+
+show index from schemaname.tablename
+
+
+
+查看数据库下每个表的大小
+
+SELECT TABLE_NAME,DATA_LENGTH+INDEX_LENGTH,TABLE_ROWS,CONCAT(ROUND((DATA_LENGTH+INDEX_LENGTH)/1024/1024,2), 'MB') AS DATA
+ 
+FROM information_schema.tables WHERE TABLE_SCHEMA='duckula' ORDER BY DATA_LENGTH+INDEX_LENGTH DESC;
+
+
+统计数据条数
+SELECT TABLE_NAME,TABLE_ROWS FROM information_schema.tables WHERE TABLE_SCHEMA='duckula';
+
+
+SHOW GLOBAL VARIABLES ;
+SHOW SESSION VARIABLES ;
+
+SHOW GLOBAL STATUS;
+SHOW STATUS;
+
+
+
+SHOW GLOBAL STATUS WHERE VARIABLE_NAME = 'COM_ROLLBACK'
+SHOW GLOBAL STATUS LIKE 'Threads_connected'
+
+
+SHOW GLOBAL VARIABLES LIKE '%slow%' ;
+
+开启慢查询日志
+SET GLOBAL  slow_query_log = ON
+
+查看慢查询日志是写入文件还是数据库表中
+SHOW VARIABLES LIKE '%log_output%';
+
+
+备注： log_output 参数设定日志文件的输出，可选值为 TABLE, FILE ,NONE; 
+ "TABLE" 意思为设定日志分别记录到 mysql 库的 general_log 和 slow_log 表中; "FILE" 意思为记录日志到操作系统的文件中， "NONE" 意思为取消日志记录。
+
+
+ SELECT pool_id,hit_rate,pages_made_young,pages_not_made_young FROM
+ information_schema.INNODB_BUFFER_POOL_STATS;
+
+
+
+
+# 查看缓冲池参数,这是以字节为基础单位的
+mysql> SHOW VARIABLES LIKE 'innodb_buffer_pool_size';
+# 如果你希望看到以GB的形式展现，可以这样写
+mysql> SELECT @@innodb_buffer_pool_size/1024/1024/1024;
+# 查看InnoDB缓冲池中包含数据的页面数
+mysql> SHOW STATUS LIKE 'innodb_buffer_pool_pages_data';
+# 查看InnoDB页面大小（默认为16KB）。
+mysql> SHOW STATUS LIKE 'innodb_page_size';
+# 查看InnoDB缓冲池中的页数量。
+mysql> SHOW STATUS LIKE 'innodb_buffer_pool_pages_total';
+# 查看缓冲池实例数量  
+mysql> SHOW VARIABLES LIKE 'innodb_buffer_pool_instances';

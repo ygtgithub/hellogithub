@@ -1,0 +1,397 @@
+
+
+
+1.vim /etc/yum.repos.d/mongodb.repo  编辑内容如下
+[mongodb-org]
+name=MongoDB Repository
+baseurl=https://mirrors.tuna.tsinghua.edu.cn/mongodb/yum/el$releasever/
+gpgcheck=0
+enabled=1
+
+2.刷新缓存并安装 mongodb-org 即可。
+
+sudo yum makecache
+sudo yum install mongodb-org
+
+3. vim /etc/mongod.conf 配置文件
+
+
+4.启停mongod 
+service mongod start
+service mongod stop
+
+
+5.进入 mongo 命令行
+
+mongo -h
+
+mongo --host 192.168.31.50 
+
+
+
+6.mongo 常用命令行操作
+(1) 查看数据库
+show dbs
+(2)切换数据库
+
+use mydatabase
+
+(3)# 删除当前数据库
+
+db.dropDatabase()
+
+(4) 查看集合
+
+show collections
+(5) 删除集合
+
+db.users.drop()
+
+(6)插入文档
+db.users.insert({
+    name:'harttle',
+    url:'http://harttle.com'
+})
+
+(7)查询文档
+db.users.find()
+
+db.users.find({
+    name:'harttle'
+})
+
+有缩进的输出
+db.users.find().pretty()
+
+(8)更新文档
+db.users.update({
+    name:'harttle'
+}, {
+    url:'http://harttle.com'    
+})
+
+(9)删除文档
+db.users.remove({})
+# 条件删除
+
+db.users.remove({
+    url:'http://harttle.com'
+})
+
+
+
+一.查询数据库信息的基本命令
+1、显示当前数据库服务上的数据库
+
+
+show dbs;
+
+
+2、切换到指定的数据库进行操作
+
+
+use mydb
+
+
+3、显示当前数据库的所有集合（collections）
+
+
+show collections;
+
+
+4、查看数据库服务的状态
+
+
+db.serverStatus();
+
+
+5、查询指定数据库的统计信息
+
+
+use admin
+
+
+db.stat()
+
+
+6、查询指定数据库包含的集合名称列表
+
+
+use test1
+
+
+db.getCollectionNames()
+
+
+7、统计集合记录数
+
+
+db.test1.count()
+
+
+8、统计指定条件的记录数
+
+
+db.test1.find({"name":"yunweicai"}).count()
+
+
+9、查询指定数据库的集合当前可用的存储空间
+
+
+db.test1.storageSize()
+
+
+10、查询指定数据库的集合分配的存储空间
+
+
+db.test1.totalSize()
+
+二.数据库操作
+
+1、创建数据库
+
+
+不需要什么create database的命令，只要使用use命令就可以创建数据库
+
+
+use test1
+
+
+2、删除数据库
+
+
+use test1
+
+
+db.dropDatabase()
+
+
+3、创建集合
+
+
+可以使用命令db.createCollection(name, { size : ..., capped : ..., max : ... } )创建集合
+
+
+也可以直接插入一个数据库就直接创建了
+
+
+db.test1.insert({"name":"mongodb","user":"opcai"})
+
+
+4、删除集合
+
+
+db.test1.drop()
+
+
+5、插入记录
+
+
+db.test1.save({"name":"yunweicai"})
+
+
+或者
+
+
+db.test1.insert({"name":"mongodb","user":"opcai"})
+
+
+6、查询记录
+
+
+db.test1.find()
+
+
+find()里面可以指定多个条件进行查询，如果为空，就查询所有的数据
+
+
+7、删除记录
+
+
+db.test1.remove({"name":"yunweicai"})
+
+
+需要指定一个条件，没有条件是不允许删除操作的。
+
+
+三.索引操作
+1、创建索引
+
+
+use testdb
+
+
+db.test1.ensureIndex({"name":1,"age":-1})
+
+
+ensureIndex方法参数中，数字1表示升序，-1表示降序。
+
+
+2、查询索引
+
+
+db.test1.getIndexes()
+
+
+3、删除索引
+
+
+删除所有的索引：
+
+
+db.test1.dropIndexes()
+
+
+根据索引名称进行删除
+
+
+db.test1.dropIndex("name_1")
+
+
+4、重建索引
+
+
+db.test1.reIndex()
+
+
+adminMongo web 管理页面下载安装(windown)
+
+github地址：https://github.com/mrvautin/adminMongo
+
+安装方法：
+
+1、把git仓库克隆到本地
+
+git clone https://github.com/mrvautin/adminMongo
+2、进入仓库
+
+cd adminMongo
+3、安装
+
+npm install
+4、启动
+
+npm start
+5、访问地址 http://192.168.31.50:1234 
+
+进来之后只需填写数据库名称（随便起一个），和本地ip地址 mongodb://192.168.31.50:27017 即可，然后点击右边的"黑色按钮connect"进入即可
+
+
+
+
+
+创建了集合
+
+db.measure.insert({
+    "code": 0,
+    "msg": "请求成功",
+    "data": [
+        {
+            "id": 21,
+            "pid": 10034,
+            "desc": "用药信息",
+            "drug_date": "2021-01-11",
+            "drug_ts": 1610349192825,
+            "drug_date_sts": null,
+            "drug_date_ets": null,
+            "clocked": true
+        },
+        {
+            "id": 20,
+            "pid": 10034,
+            "desc": "用药信息",
+            "drug_date": "2021-01-11",
+            "drug_ts": 1610349092825,
+            "drug_date_sts": null,
+            "drug_date_ets": null,
+            "clocked": true
+        },
+        {
+            "id": 19,
+            "pid": 10034,
+            "desc": "用药信息",
+            "drug_date": "2021-01-11",
+            "drug_ts": 1610349082825,
+            "drug_date_sts": null,
+            "drug_date_ets": null,
+            "clocked": true
+        }
+    ]
+})
+
+db.measure.find().pretty()
+
+
+
+
+
+
+mongodb索引
+
+注意：索引排序规则升序：1，降序-1
+
+
+# 查询articles集合的索引
+db.articles.getIndexes();
+# 添加titlei字段索引，并且为升序
+db.articles.ensureIndex({title:1});
+#重构索引(慎用)
+db.articles.reIndex();
+
+Single Field (单字段索引)
+Compound Index (复合索引[多字段索引])
+# 创建item、stock字段的复合索引，并且升序排序
+db.products.ensureIndex( { "item": 1, "stock": 1 } 
+
+# 查询结果集中排序
+db.events.find().sort( { username: -1, date: 1 } )
+# 查询结果集中排序
+db.user_scores.find().sort({score:-1,date:-1}).limit(1)
+# 执行相关查询可以看出查询效率大大提高
+
+MultiKey Index (多键索引)
+
+
+
+{
+    userid:"marker",
+    address:[
+        {zip:"618255"},
+        {zip:"618254"}
+    ]
+
+}
+
+
+# 创建索引,并将zip升序排列
+db.users.ensureIndex({"address.zip": 1});
+
+# 假如我们做这样的查询
+db.users.find({"addr":{"$in":[{zip:"618254"}]}})
+
+Text Indexes (文本索引)
+
+Hashed Indexes (哈希码索引)
+哈希索引在2.4版本更新的，将实体的的哈希值作为索引字段，
+
+# 给user_scores的score字段创建一个哈希索引
+db.user_scores.ensureIndex( { score: "hashed" } )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

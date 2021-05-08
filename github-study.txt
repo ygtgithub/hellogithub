@@ -1,0 +1,16 @@
+
+
+win 客户端 tortoisegit
+
+
+创建 github 账号
+username：ygtgithub
+
+密码 1015282423ygt
+
+邮箱 yanggentao@vita-course.com
+
+
+
+C:\Program Files (x86)\Git\bin  C:\Program Files\Git
+
